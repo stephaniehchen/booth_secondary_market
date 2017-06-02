@@ -5,6 +5,12 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
+# Starter generators
+gem "starter_generators", :git => "https://github.com/raghubetina/starter_generators"
+# Bundle install for devise user forms
+gem "devise"
+# Faker gem
+gem "faker"
 #Additional installs based on Heroku
 gem "pg", :group => :production
 gem "rails_12factor", :group => :production

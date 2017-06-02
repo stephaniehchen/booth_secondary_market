@@ -1,0 +1,91 @@
+<!-- Validation failure messages -->
+<% if @event.errors.any? %>
+  <% @event.errors.full_messages.each do |message| %>
+    <div class="alert alert-dismissable alert-danger">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <%= message %>
+    </div>
+  <% end %>
+<% end %>
+
+<div class="page-header">
+  <h3>Edit Event #<%= @event.id %></h3>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <form action="/update_event/<%= @event.id %>" method="post">
+      <!-- Hidden input for authenticity token to protect from forgery -->
+      <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+
+      <!-- Label and input for event_name -->
+      <div class="form-group">
+        <label for="event_name" class="control-label">
+          Event name
+        </label>
+
+        <textarea id="event_name" name="event_name" placeholder="Event name" class="form-control" rows="3"><%= @event.event_name %></textarea>
+      </div>
+
+      <!-- Label and input for event_date -->
+      <div class="form-group">
+        <label for="event_date" class="control-label">
+          Event date
+        </label>
+
+        <input type="text" id="event_date" name="event_date" placeholder="Event date" class="form-control" value="<%= @event.event_date %>">
+      </div>
+
+      <!-- Label and input for location_address -->
+      <div class="form-group">
+        <label for="location_address" class="control-label">
+          Location address
+        </label>
+
+        <input type="text" id="location_address" name="location_address" placeholder="Location address" class="form-control" value="<%= @event.location_address %>">
+      </div>
+
+      <!-- Label and input for url -->
+      <div class="form-group">
+        <label for="url" class="control-label">
+          Url
+        </label>
+
+        <input type="text" id="url" name="url" placeholder="Url" class="form-control" value="<%= @event.url %>">
+      </div>
+
+      <!-- Label and input for image_url -->
+      <div class="form-group">
+        <label for="image_url" class="control-label">
+          Image url
+        </label>
+
+        <input type="text" id="image_url" name="image_url" placeholder="Image url" class="form-control" value="<%= @event.image_url %>">
+      </div>
+
+      <!-- Label and input for organizer_id -->
+      <div class="form-group">
+        <label for="organizer_id" class="control-label">
+          Organizer
+        </label>
+
+        <input type="text" id="organizer_id" name="organizer_id" placeholder="Organizer" class="form-control" value="<%= @event.organizer_id %>">
+      </div>
+
+      <!-- Label and input for description -->
+      <div class="form-group">
+        <label for="description" class="control-label">
+          Description
+        </label>
+
+        <textarea id="description" name="description" placeholder="Description" class="form-control" rows="3"><%= @event.description %></textarea>
+      </div>
+
+      <button class="btn btn-warning">
+        Update Event
+      </button>
+      or
+      <a href="/events/<%= @event.id %>">Cancel</a>
+    </form>
+  </div>
+</div>
