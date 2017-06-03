@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>BoothSecondaryMarket</title>
+  <title>Booth Secondary Ticket Market</title>
 
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/paper/bootstrap.min.css">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
@@ -34,24 +34,56 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a href="/" class="navbar-brand">BoothSecondaryMarket</a>
+        <a href="/" class="navbar-brand"><img src="http://faculty.chicagobooth.edu/eob/chicagologo.png" height="35" > Booth Aftermarket</a>
       </div>
 
+      <% if current_user != nil %>
+<!-- Navigation bar if user is signed in -->
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
           <li><a href="/organizers">Organizers</a></li>
-          <li><a href="/comments">Comments</a></li>
-          <li><a href="/posts">Posts</a></li>
           <li><a href="/events">Events</a></li>
-          <li><a href="/rails/info">Sitemap</a></li>
+          <li><a href="/posts">My Posts</a></li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="/users/edit">Dummy Edit Profile Link</a></li>
-          <li><a href="/users/sign_out" data-method="delete" rel="nofollow">Dummy Sign Out Link</a></li>
+            <li>
+              <a href="/users/edit">
+                <i class="fa fa-fw fa-edit"></i>
+                <%=current_user.username%>
+              </a>
+            </li>
+            <li>
+              <a href="/users/sign_out" data-method="delete" rel="nofollow">
+                <i class="fa fa-fw fa-sign-out"></i>
+                Sign Out
+              </a>
+            </li>
+          </ul>
+      </div><!-- /.navbar-collapse -->
+      <%else%>
+      <!-- Navigation bar if user is NOT signed in -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li><a href="/organizers">Organizers</a></li>
+          <li><a href="/events">Events</a></li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a href="/users/sign_in">
+            Sign In
+          </a>
+        </li>
+        <li>
+          <a href="/users/sign_up">
+            Sign Up
+          </a>
+        </li>
         </ul>
       </div><!-- /.navbar-collapse -->
+      <%end%>
     </div>
   </nav>
 

@@ -11,6 +11,9 @@ gem "starter_generators", :git => "https://github.com/raghubetina/starter_genera
 gem "devise"
 # Faker gem
 gem "faker"
+# Gem for image uploads
+gem "carrierwave"
+
 #Additional installs based on Heroku
 gem "pg", :group => :production
 gem "rails_12factor", :group => :production
