@@ -9,7 +9,7 @@
       <dd><%= @event.event_name %></dd>
 
       <dt>Event date</dt>
-      <dd><%= @event.event_date %></dd>
+      <dd><%= @event.event_date.strftime("%A %b %d, %Y at %l:%M%p") %></dd>
 
       <dt>Location address</dt>
       <dd><%= @event.location_address %></dd>
@@ -21,7 +21,7 @@
       <dd><%= @event.image_url %></dd>
 
       <dt>Organizer</dt>
-      <dd><%= @event.organizer_id %></dd>
+      <dd><%= @event.organizer.name %></dd>
 
       <dt>Description</dt>
       <dd><%= @event.description %></dd>
