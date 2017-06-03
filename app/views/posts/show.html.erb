@@ -1,0 +1,43 @@
+<div class="page-header">
+  <h3>Post #<%= @post.id %></h3>
+</div>
+
+<div class="row">
+  <div class="col-md-12 mb-2">
+    <dl class="dl-horizontal">
+      <dt>Events</dt>
+      <dd><%= @post.events_id %></dd>
+
+      <dt>Content</dt>
+      <dd><%= @post.content %></dd>
+
+      <dt>Active</dt>
+      <dd><%= @post.active %></dd>
+
+      <dt>Ticket amount</dt>
+      <dd><%= @post.ticket_amount %></dd>
+
+      <dt>User</dt>
+      <dd><%= @post.user_id %></dd>
+
+      <dt>Sell buy</dt>
+      <dd><%= @post.sell_buy %></dd>
+
+      <dt>Number tickets</dt>
+      <dd><%= @post.number_tickets %></dd>
+
+    </dl>
+
+    <div class="btn-group btn-group-justified">
+      <a href="/posts" class="btn btn-primary">
+        Back
+      </a>
+      <a href="/posts/<%= @post.id %>/edit" class="btn btn-warning">
+        Edit
+      </a>
+      <a href="/delete_post/<%= @post.id %>" class="btn btn-danger" rel="nofollow">
+        Delete
+      </a>
+    </div>
+  </div>
+</div>
