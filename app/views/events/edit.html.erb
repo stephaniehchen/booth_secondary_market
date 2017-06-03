@@ -30,12 +30,15 @@
       <!-- Label and input for event_date -->
       <div class="form-group">
         <label for="event_date" class="control-label">
-          Event date
+          Event date / time
         </label>
-
-        <input type="text" id="event_date" name="event_date" placeholder="Event date" class="form-control" value="<%= @event.event_date %>">
+        <div class='input-group date' id='datetimepicker1'>
+          <input type='text' class="form-control" placeholder="Event date/time" name="event_date" id="event_date" value="<%= @event.event_date.strftime("%A %b %d, %Y at %l:%M%p") %>">
+          <span class="input-group-addon">
+            <span class="glyphicon glyphicon-calendar"></span>
+          </span>
+        </div>
       </div>
-
       <!-- Label and input for location_address -->
       <div class="form-group">
         <label for="location_address" class="control-label">
@@ -89,3 +92,10 @@
     </form>
   </div>
 </div>
+
+<!--JS for calendar picker-->
+  <script type="text/javascript">
+    $(function () {
+      $('#datetimepicker1').datetimepicker();
+    });
+  </script>

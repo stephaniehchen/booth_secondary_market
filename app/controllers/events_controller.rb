@@ -21,7 +21,7 @@ class EventsController < ApplicationController
     @event = Event.new
 
     @event.event_name = params[:event_name]
-    @event.event_date = params[:event_date]
+    @event.event_date = Chronic.parse(params[:event_date])
     @event.location_address = params[:location_address]
     @event.url = params[:url]
     @event.image_url = params[:image_url]
@@ -47,7 +47,7 @@ class EventsController < ApplicationController
     @event = Event.find(params[:id])
 
     @event.event_name = params[:event_name]
-    @event.event_date = params[:event_date]
+    @event.event_date = Chronic.parse(params[:event_date])
     @event.location_address = params[:location_address]
     @event.url = params[:url]
     @event.image_url = params[:image_url]
