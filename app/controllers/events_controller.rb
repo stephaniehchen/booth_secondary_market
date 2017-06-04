@@ -1,13 +1,15 @@
 class EventsController < ApplicationController
   def index
     @events = Event.all
-
+    @post = Post.all
+    @like = Like.all
     render("events/index.html.erb")
   end
 
   def show
     @event = Event.find(params[:id])
-
+    @post = Post.all
+    @like = Like.all
     render("events/show.html.erb")
   end
 

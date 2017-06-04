@@ -20,7 +20,7 @@ class PostsController < ApplicationController
   def create
     @post = Post.new
 
-    @post.events_id = params[:events_id]
+    @post.event_id = params[:event_id]
     @post.content = params[:content]
     @post.active = params[:active]
     @post.ticket_amount = params[:ticket_amount]
@@ -46,7 +46,7 @@ class PostsController < ApplicationController
   def update
     @post = Post.find(params[:id])
 
-    @post.events_id = params[:events_id]
+    @post.event_id = params[:event_id]
     @post.content = params[:content]
     @post.active = params[:active]
     @post.ticket_amount = params[:ticket_amount]
