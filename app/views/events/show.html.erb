@@ -1,33 +1,165 @@
-<div class="page-header">
-  <h3>Event #<%= @event.id %></h3>
-</div>
+<hr>
+<div class="row" id="<%=@event.id%>">
+  <div class="col-md-8 col-md-offset-2">
+    <ul class="media-list">
+      <li class="media">
+        <div class="media-body">
+          <h3 class="media-heading">
+            <a href="/events/<%=@event.id%>"><%=@event.event_name%></a>
+            <small>
+              Event in <%=distance_of_time_in_words(Time.now, @event.event_date)%>
+            </small>
+          </h3>
+          Hosted by <a href="/organizers/<%=@event.organizer.id%>"><%=@event.organizer.name%></a>
+          <p>
+            <%if @event.fans.where(:id => current_user.id).exists?%>
+              <a href="/delete_like/<%Like.find_by(:user_id => current_user.id, :event_id => @event.id).id%>" class="btn btn-link" rel="nofollow">
+                <i class="fa fa-heart"></i>
+              </a>
+            <%else%>
 
-<div class="row">
-  <div class="col-md-12 mb-2">
-    <dl class="dl-horizontal">
-      <dt>Event name</dt>
-      <dd><%= @event.event_name %></dd>
+              <form action="/create_like" method="post">
+                <!-- Hidden input for authenticity token to protect from forgery -->
+                <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
 
-      <dt>Event date</dt>
-      <dd><%= @event.event_date.strftime("%A %b %d, %Y at %l:%M%p") %></dd>
+                <input type="hidden" name="event_id" value="<%=@event.id%>">
 
-      <dt>Location address</dt>
-      <dd><%= @event.location_address %></dd>
+                <input type="hidden" name="user_id" value="<%=current_user.id%>">
+                <button class="btn btn-link">
+                  <i class="fa fa-heart-o"></i>
+                </button>
+              <%end%>
+                <%
+                   username_list = []
+                   @event.likes.each do |like|
+                     username_list.push(like.user.username)
+                   end
+                %>
+                <% if username_list.count == 1 %>
+                  <%= "#{username_list.to_sentence} likes this" %>
+                <% elsif username_list.count > 1 %>
+                  <%= "#{username_list.to_sentence} like this" %>
+                <% else %>
+                  <!-- do nothing if no one has liked the post so far -->
+                <% end %>
+              </form>
+        </p>
+          <p>
+            <dl class="dl-horizontal">
 
-      <dt>Url</dt>
-      <dd><%= @event.url %></dd>
+              <dt>Event date</dt>
+              <dd><%= @event.event_date.strftime("%A %b %d, %Y at %l:%M%p") %></dd>
 
-      <dt>Image url</dt>
-      <dd><%= @event.image_url %></dd>
+              <dt>Location address</dt>
+              <dd><%= @event.location_address %></dd>
 
-      <dt>Organizer</dt>
-      <dd><%= @event.organizer.name %></dd>
+              <dt>Url</dt>
+              <dd><a href="<%= @event.url %>"><%= @event.url %></a></dd>
 
-      <dt>Description</dt>
-      <dd><%= @event.description %></dd>
+              <dt>Image</dt>
+              <dd><img src="<%= @event.image_url %>"></dd>
 
-    </dl>
+              <dt>Description</dt>
+              <dd><%= @event.description %></dd>
 
+            </dl>
+          </p>
+        </div>
+      </li>
+      <hr>
+      <h4>
+        Posts
+      </h4>
+    <%if @event.posts.count !=0%>
+    </ul>
+    <% @event.posts.each do |post| %>
+      <% if post.active != 0 %>
+        <ul class="media-list">
+          <li class="media">
+            <div class="media-body">
+              <h6 class="media-heading">
+                <a href="/posts/<%=post.id%>"><%=post.user.username%></a>
+                <small>
+                  <%=time_ago_in_words(post.created_at)%> ago
+                </small>
+              </h6>
+              <ul class="media-list">
+                <li><b>Type:</b> <%=post.sell_buy%></li>
+                <li><b>Cost per ticket:</b> <%=number_to_currency(post.ticket_amount)%></li>
+                <li><b>Number of tickets for sale:</b> <%=post.number_tickets%></li>
+                <br>
+              </ul>
+            </div>
+          </li>
+      <%end%>
+    <%end%>
+    <%else%>
+      No posts submitted yet!
+    <%end%>
+    <li class="media">
+      <div class="panel panel-default">
+        <div class="panel-heading">Submit a post</div>
+          <div class="panel-body">
+          <form action="/create_post" method="post">
+            <!-- Hidden input for authenticity token to protect from forgery -->
+            <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+
+            <input type="hidden" name="event_id" value="<%=@event.id%>">
+
+            <input type="hidden" name="active" value="1">
+
+            <input type="hidden" name="user_id" value="<%=current_user.id%>">
+              <!-- Label and input for sell/buy -->
+                <div class="form-group">
+                  <label for="sell_buy" class="sr-only">
+                    Sell or Buy?
+                  </label>
+
+                  <div class="input-group">
+                    <%= select_tag(:sell_buy, "<option>Sell</option><option>Buy</option>".html_safe, :class => "form-control", prompt: "Selling or buying tickets?") %>
+                  </div>
+                </div>
+            <!-- Label and input for amount -->
+            <div class="form-group">
+              <label for="ticket_amount" class="sr-only">
+                Amount
+              </label>
+
+              <div class="input-group">
+                <input type="text" id="ticket_amount" name="ticket_amount" class="form-control" placeholder="Amount per ticket" required>
+              </div>
+            </div>
+            <!-- Label and input for number of tickets -->
+            <div class="form-group">
+              <label for="number_tickets" class="sr-only">
+                Number of tickets
+              </label>
+
+              <div class="input-group">
+                <input type="text" id="number_tickets" name="number_tickets" class="form-control" placeholder="Number of tickets" required>
+              </div>
+            </div>
+            <!-- Label and input for body -->
+            <div class="form-group">
+              <label for="content" class="sr-only">
+                Content
+              </label>
+
+              <div class="input-group">
+                <input type="text" id="content" name="content" class="form-control" placeholder="Description" required>
+
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="submit">
+                    <i class="fa fa-pencil-square-o"></i>
+                  </button>
+                </span>
+              </div><!-- /input-group -->
+            </div>
+          </form>
+        </div>
+      </div>
+      </li>
+    </ul>
     <div class="btn-group btn-group-justified">
       <a href="/events" class="btn btn-primary">
         Back
@@ -40,4 +172,5 @@
       </a>
     </div>
   </div>
+</div>
 </div>
