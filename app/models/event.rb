@@ -6,5 +6,6 @@ class Event < ApplicationRecord
 
   has_many :posts, :foreign_key => "event_id", :dependent => :destroy
   has_many :likes, :dependent => :destroy
+  has_many :fans, :through => :likes, :source => :user
   belongs_to :organizer
 end
