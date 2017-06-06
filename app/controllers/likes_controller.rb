@@ -17,16 +17,23 @@ class LikesController < ApplicationController
     render("likes/new.html.erb")
   end
 
+  def my_likes
+    @like = Like.all
+    @event = Event.all
+
+    render("likes/my_likes.html.erb")
+  end
+
   def create
     @like = Like.new
-    @post = Post.all
+    @event = Event.all
     @like.event_id = params[:event_id]
     @like.user_id = params[:user_id]
 
     save_status = @like.save
 
     if save_status == true
-      redirect_to("/posts/#{@post.id}", :notice => "Like created successfully.")
+      redirect_to("/likes/my_likes", :notice => "Like created successfully.")
     else
       render("likes/new.html.erb")
     end

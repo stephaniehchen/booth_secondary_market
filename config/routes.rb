@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   # READ
   get "/likes", :controller => "likes", :action => "index"
+  get "/likes/my_likes", :controller => "likes", :action => "my_likes"
   get "/likes/:id", :controller => "likes", :action => "show"
 
   # UPDATE

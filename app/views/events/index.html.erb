@@ -43,7 +43,7 @@
                   </li>
                   <!--<p>-->
                     <%if event.fans.where(:id => current_user.id).exists?%>
-                      <a href="/delete_like/<%Like.find_by(:user_id => current_user.id, :event_id => event.id).id%>" class="btn btn-link" rel="nofollow">
+                      <a href="/delete_like/<%=Like.find_by(:user_id => current_user.id, :event_id => event.id).id%>" class="btn btn-link" rel="nofollow">
                         <i class="fa fa-heart"></i>
                       </a>
                     <%else%>
@@ -81,7 +81,7 @@
                 <%if event.posts.count !=0%>
                 </ul>
                 <% event.posts.each do |post| %>
-                  <% if post.active != 0 %>
+                  <% if post.active != false %>
                     <ul class="media-list">
                       <li class="media">
                         <div class="media-body">
@@ -94,7 +94,7 @@
                           <ul class="media-list">
                             <li><b>Type:</b> <%=post.sell_buy%></li>
                             <li><b>Cost per ticket:</b> <%=number_to_currency(post.ticket_amount)%></li>
-                            <li><b>Number of tickets for sale:</b> <%=post.number_tickets%></li>
+                            <li><b>Number of tickets:</b> <%=post.number_tickets%></li>
                             <br>
                           </ul>
                         </div>

@@ -5,7 +5,7 @@
       <li class="media">
         <div class="media-body">
           <h3 class="media-heading">
-            <a href="/events/<%=@event.id%>"><%=@event.event_name%></a>
+            <%=@event.event_name%>
             <small>
               Event in <%=distance_of_time_in_words(Time.now, @event.event_date)%>
             </small>
@@ -13,7 +13,7 @@
           Hosted by <a href="/organizers/<%=@event.organizer.id%>"><%=@event.organizer.name%></a>
           <p>
             <%if @event.fans.where(:id => current_user.id).exists?%>
-              <a href="/delete_like/<%Like.find_by(:user_id => current_user.id, :event_id => @event.id).id%>" class="btn btn-link" rel="nofollow">
+              <a href="/delete_like/<%=Like.find_by(:user_id => current_user.id, :event_id => @event.id).id%>" class="btn btn-link" rel="nofollow">
                 <i class="fa fa-heart"></i>
               </a>
             <%else%>
@@ -51,7 +51,7 @@
               <dd><%= @event.event_date.strftime("%A %b %d, %Y at %l:%M%p") %></dd>
 
               <dt>Location address</dt>
-              <dd><%= @event.location_address %></dd>
+              <dd><a href="https://maps.google.com?q=<%=@event.location_address%>"><%= @event.location_address %></a></dd>
 
               <dt>Url</dt>
               <dd><a href="<%= @event.url %>"><%= @event.url %></a></dd>
@@ -70,10 +70,10 @@
       <h4>
         Posts
       </h4>
-    <%if @event.posts.count !=0%>
+    <%if @event.posts.count != 0%>
     </ul>
     <% @event.posts.each do |post| %>
-      <% if post.active != 0 %>
+      <% if post.active != false %>
         <ul class="media-list">
           <li class="media">
             <div class="media-body">
@@ -86,7 +86,7 @@
               <ul class="media-list">
                 <li><b>Type:</b> <%=post.sell_buy%></li>
                 <li><b>Cost per ticket:</b> <%=number_to_currency(post.ticket_amount)%></li>
-                <li><b>Number of tickets for sale:</b> <%=post.number_tickets%></li>
+                <li><b>Number of tickets:</b> <%=post.number_tickets%></li>
                 <br>
               </ul>
             </div>
