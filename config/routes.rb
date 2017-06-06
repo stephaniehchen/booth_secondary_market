@@ -61,11 +61,10 @@ Rails.application.routes.draw do
   get "/posts/my_posts", :controller => "posts", :action => "my_posts"
   get "/posts/:id", :controller => "posts", :action => "show"
 
-
-
   # UPDATE
   get "/posts/:id/edit", :controller => "posts", :action => "edit"
   post "/update_post/:id", :controller => "posts", :action => "update"
+  get "/archive_post/:id", :controller => "posts", :action => "archive"
 
   # DELETE
   get "/delete_post/:id", :controller => "posts", :action => "destroy"

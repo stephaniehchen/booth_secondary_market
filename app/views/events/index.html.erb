@@ -80,56 +80,59 @@
                   </h4>
                 </ul>
 
-                <%if event.posts.count !=0%>
-                <% event.posts.each do |post| %>
-                  <% if post.active != false %>
-                    <ul class="media-list">
-                      <li class="media">
-                        <div class="media-body">
-                          <h6 class="media-heading">
-                            <a href="/posts/<%=post.id%>"><%=post.user.username%></a>
-                            <small>
-                              <%=time_ago_in_words(post.created_at)%> ago
-                            </small>
-                          </h6>
-                          <ul class="media-list">
-                            <p>
-                            <li><b>Type:</b> <%=post.sell_buy%></li>
-                            <li><b>Cost per ticket:</b> <%=number_to_currency(post.ticket_amount)%></li>
-                            <li><b>Number of tickets:</b> <%=post.number_tickets%></li>
-                            <!-- <li>
-                            <%if post.comments.count != "0"%>
-                            <% post.comments.each do |comment|%>
-                            <ul class="list-group">
-                              <li class="list">
-                                <div class="list-body">
-                                  <h6 class="list-heading">
-                                    <a href="/users/<%=comment.user.id%>"><%=comment.user.username%></a>
-                                    <small>
-                                      <%=time_ago_in_words(comment.created_at)%> ago
-                                    </small>
-                                  </h6>
-                                  <%=comment.content%>
-                                </li>
-                                    <br>
-                                </div>
+                <% if event.posts.count != 0 %>
+                  <% event.posts.each do |post| %>
+                    <% if post.active != false %>
+                      <ul class="media-list">
+                        <li class="media">
+                          <div class="media-body">
+                            <h6 class="media-heading">
+                              <a href="/posts/<%=post.id%>"><%=post.user.username%></a>
+                              <small><%=time_ago_in_words(post.created_at)%> ago</small>
+                            </h6>
+                            <ul class="media-list">
+                              <li><b>Type:</b> <%=post.sell_buy%></li>
+                              <li><b>Cost per ticket:</b> <%=number_to_currency(post.ticket_amount)%></li>
+                              <li><b>Number of tickets:</b> <%=post.number_tickets%></li>
+                              <li>
+
+                                <!-- Display all of the post's comments -->
+                                <% if post.comments.count > 0 %>
+                                  <b>Comments:</b>
+                                  <ul> <!-- Post comments list -->
+                                    <% post.comments.each do |comment| %>
+                                      <li><a href="/users/<%=comment.user.id%>"><%=comment.user.username%></a> <small><%= time_ago_in_words(comment.created_at)%> ago</small>: <%= comment.content %></li>
+                                    <% end %>
+                                    <div class="panel panel-default">
+                                      <div class="panel-heading">Submit a comment</div>
+                                        <div class="panel-body">
+                                        <form action="/create_comment" method="post">
+                                          <!-- Hidden input for authenticity token to protect from forgery -->
+                                          <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+
+                                          <input type="hidden" name="post_id" value="<%=post.id%>">
+                                          <input type="hidden" name="user_id" value="<%=current_user.id%>">
+                                          <div class="input-group">
+                                            <input type="text" id="content" name="content" class="form-control" placeholder="Comment" required>
+                                          </div>
+                                        </form>
+                                      </div>
+                                    </div>
+                                  </ul> <!-- End of  post comments list -->
+                                <% end %>
+
                               </li>
-                              <%end%>
                             </ul>
-                          </li> -->
-
-                          </p>
-
-                            <%end%>
-                          </ul>
-                        </div>
-                      </li>
+                         </div>
+                       </li>
+                     </ul>
+                    <%end%>
                   <%end%>
-                <%end%>
                 <%else%>
                   <i>No posts submitted yet!</i>
                 <%end%>
-                <li class="media">
+
+<!--                 <li class="media"> -->
                   <div class="panel panel-default">
                     <div class="panel-heading">Submit a post</div>
                       <div class="panel-body">
@@ -191,8 +194,8 @@
                       </form>
                     </div>
                   </div>
-                  </li>
-                </ul>
+                  <!-- </li> -->
+                <!-- </ul> -->
       </div>
     </div>
   </div>
