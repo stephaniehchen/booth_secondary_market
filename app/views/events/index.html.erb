@@ -1,16 +1,22 @@
-<div class="page-header">
-  <a href="/events/new" class="btn btn-default btn-block">
-      <i class="fa fa-plus"></i>
-    </a>
+
+<div class="row">
+ <div class="col-md-8 col-md-offset-2">
+   <hr>
+   <a href="/events/new" class="btn btn-default btn-block">
+     <i class="fa fa-plus"></i>
+   </a>
+
+   <hr>
+ </div>
 </div>
 
 <% @events.each do |event| %>
-<div class="row">
+<div class="row" id="<%=event.id%>">
   <div class="col-md-8 col-md-offset-2">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title">
-          <a href="/events/<%=event.id%>"><%=event.name%></a>
+          <a href="/events/<%=event.id%>"><%=event.event_name%></a>
           <small>
             <%=event.event_date.strftime("%A %m/%d at %l:%M%p")%>
           </small>
@@ -19,146 +25,140 @@
       <%if event.image_url != nil%>
       <div class="panel-body">
         <a href="/events/<%=event.id%>">
-          <img src="<%=event.image%>" class="img-responsive">
+          <img src="<%=event.image_url%>" class="img-responsive"></img>
         </a>
-      <%else%>
       <%end%>
-
         <p>
+          <%if event.fans.where(:id => current_user.id).exists?%>
+            <a href="/delete_like/<%Like.find_by(:user_id => current_user.id, :event_id => event.id).id%>" class="btn btn-link" rel="nofollow">
+              <i class="fa fa-heart"></i>
+            </a>
+          <%else%>
+
             <form action="/create_like" method="post">
               <!-- Hidden input for authenticity token to protect from forgery -->
               <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
 
-              <input type="hidden" name="photo_id" value="<%=photo.id%>">
+              <input type="hidden" name="event_id" value="<%=event.id%>">
 
-              <input type="hidden" name="user_id" value="<%=photo.user_id%>">
-
+              <input type="hidden" name="user_id" value="<%=current_user.id%>">
               <button class="btn btn-link">
                 <i class="fa fa-heart-o"></i>
               </button>
-
-              <%=[Like.where(:user_id => photo.user_id).pluck(:id)].to_sentence %> like this
+            <%end%>
+              <%
+                 username_list = []
+                 event.likes.each do |like|
+                   username_list.push(like.user.username)
+                 end
+              %>
+              <% if username_list.count == 1 %>
+                <%= "#{username_list.to_sentence} likes this" %>
+              <% elsif username_list.count > 1 %>
+                <%= "#{username_list.to_sentence} like this" %>
+              <% else %>
+                <!-- do nothing if no one has liked the post so far -->
+              <% end %>
             </form>
         </p>
 
-        <ul class="media-list">
+                <ul class="media-list">
+                  <li class="media">
+                    <div class="media-body">
+                      <h6 class="media-heading">
+                        <a href="/event/<%=event.id%>"><%=event.event_name%></a>
+                        <small>
+                          Event in <%=distance_of_time_in_words(Time.now, event.event_date)%>
+                        </small>
+                      </h6>
+                      Hosted by <%=event.organizer.name%>
+                      <p>
+                      <%=event.description%>
+                      </p>
+                    </div>
+                  </li>
+                </ul><% event.posts.each do |post| %>
+                  <% if post.active != 0 %>
+                    <ul class="media-list">
+                      <li class="media">
+                        <div class="media-body">
+                          <h6 class="media-heading">
+                            <a href="/posts/<%=post.id%>"><%=post.user.username%></a>
+                            <small>
+                              <%=time_ago_in_words(post.created_at)%> ago
+                            </small>
+                          </h6>
+                          <%=post.sell_buy%>
+                          <%=number_to_currency(post.ticket_amount)%>
+                          <%=post.number_tickets%>
+                        </div>
+                      </li>
+                    </ul>
+                  <%end%>
+                <%end%>
+                <li class="media">
+                  <div class="media-body">
+                      <form action="/create_post" method="post">
+                        <!-- Hidden input for authenticity token to protect from forgery -->
+                        <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
 
-          <li class="media">
-            <div class="media-body">
-              <h6 class="media-heading">
-                <a href="/users/<%=photo.user_id%>"><%=User.find_by(:id => photo.user_id).username%></a>
-                <small>
-                  <%=time_ago_in_words(photo.created_at)%> ago
-                </small>
-              </h6>
-              <%=photo.caption%>
-            </div>
-          </li>
+                        <input type="hidden" name="event_id" value="<%=event.id%>">
 
-  <% photo.comments.each do |comment| %>
+                        <input type="hidden" name="active" value="1">
 
-  <ul class="media-list">
+                        <input type="hidden" name="user_id" value="<%=current_user.id%>">
+                          <!-- Label and input for sell/buy -->
+                            <div class="form-group">
+                              <label for="sell_buy" class="sr-only">
+                                Sell or Buy?
+                              </label>
 
-    <li class="media">
-      <div class="media-body">
-        <h6 class="media-heading">
-          <a href="/users/<%=comment.user_id%>"><%=User.find_by(:id => comment.user_id).username%></a>
-          <small>
-            <%=time_ago_in_words(comment.created_at)%> ago
-          </small>
-        </h6>
-        <%=comment.body%>
-      </div>
-    </li>
-    <%end%>
+                              <div class="input-group">
+                                <%= select_tag(:sell_buy, "<option>sell</option><option>buy</option>".html_safe, :class => "form-control", prompt: "Selling or buying tickets?") %>
+                              </div>
+                            </div>
+                        <!-- Label and input for amount -->
+                        <div class="form-group">
+                          <label for="ticket_amount" class="sr-only">
+                            Amount
+                          </label>
 
+                          <div class="input-group">
+                            <input type="text" id="ticket_amount" name="ticket_amount" class="form-control" placeholder="Amount per ticket" required>
+                          </div>
+                        </div>
+                        <!-- Label and input for number of tickets -->
+                        <div class="form-group">
+                          <label for="number_tickets" class="sr-only">
+                            Number of tickets
+                          </label>
 
-          <li class="media">
-            <div class="media-body">
-              <form action="/create_comment" method="post">
-                <!-- Hidden input for authenticity token to protect from forgery -->
-                <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+                          <div class="input-group">
+                            <input type="text" id="number_tickets" name="number_tickets" class="form-control" placeholder="Number of tickets" required>
+                          </div>
+                        </div>
+                        <!-- Label and input for body -->
+                        <div class="form-group">
+                          <label for="content" class="sr-only">
+                            Content
+                          </label>
 
-                <input type="hidden" name="photo_id" value="<%=photo.id%>">
+                          <div class="input-group">
+                            <input type="text" id="content" name="content" class="form-control" placeholder="Description" required>
 
-                <input type="hidden" name="user_id" value="<%=current_user.id%>">
+                            <span class="input-group-btn">
+                              <button class="btn btn-default" type="submit">
+                                <i class="fa fa-pencil-square-o"></i>
+                              </button>
+                            </span>
+                          </div><!-- /input-group -->
+                        </div>
+                      </form>
+                    </div>
+                  </li>
 
-                <!-- Label and input for body -->
-                <div class="form-group">
-                  <label for="body" class="sr-only">
-                    Body
-                  </label>
-
-                  <div class="input-group">
-                    <input type="text" id="body" name="body" class="form-control" placeholder="Add a comment..." required>
-
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">
-                        <i class="fa fa-commenting-o"></i>
-                      </button>
-                    </span>
-                  </div><!-- /input-group -->
-                </div>
-              </form>
-            </div>
-          </li>
-        </ul>
-        <%if current_user.photos.ids.include? photo.id %>
-        <div class="btn-group btn-group-justified">
-          <a href="/photos" class="btn btn-primary">
-            <i class="fa fa-chevron-left"></i>
-          </a>
-          <a href="/photos/<%photo.id%>/edit" class="btn btn-warning">
-           <i class="fa fa-edit"></i>
-          </a>
-          <a href="/delete_photo/<%photo.id%>" class="btn btn-danger" rel="nofollow">
-            <i class="fa fa-trash-o"></i>
-          </a>
-        </div>
-        <%else%>
-        <div class="btn-group btn-group-justified">
-         <a href="/photos" class="btn btn-primary">
-           <i class="fa fa-chevron-left"></i>
-         </a>
-       </div>
-       <%end%>
       </div>
     </div>
   </div>
 </div>
 <%end%>
-
-<!--Original
-<div class="row">
-  <div class="col-md-12">
-    <table class="table table-striped table-hover">
-      <tr>
-        <th>Event name</th>
-        <th>Event date</th>
-        <th>Location address</th>
-        <th>Url</th>
-        <th>Image url</th>
-        <th>Organizer</th>
-        <th>Description</th>
-        <th>Actions</th>
-      </tr>
-
-      <% @events.each do |event| %>
-      <tr>
-        <td><%= event.event_name %></td>
-        <td><%= event.event_date.strftime("%A %m/%d at %l:%M%p") %></td>
-        <td><%= event.location_address %></td>
-        <td><%= event.url %></td>
-        <td><%= event.image_url %></td>
-        <td><%= event.organizer.name %></td>
-        <td><%= event.description %></td>
-        <td>
-          <a href="/events/<%= event.id %>" class="btn btn-primary">Show</a>
-          <a href="/events/<%= event.id %>/edit" class="btn btn-warning">Edit</a>
-          <a href="/delete_event/<%= event.id %>" class="btn btn-danger" rel="nofollow">Delete</a>
-        </td>
-      </tr>
-      <% end %>
-    </table>
-  </div>
-</div>
