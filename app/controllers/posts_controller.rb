@@ -1,4 +1,16 @@
 class PostsController < ApplicationController
+  def archive
+    @post = Post.find(params[:id])
+    @post.active = false
+    @post.save
+
+    if URI(request.referer).path == "/posts/#{@post.id}"
+      redirect_to("/", :notice => "Post archived.")
+    else
+      redirect_to(:back, :notice => "Post archived.")
+    end
+  end
+
   def index
     @posts = Post.all
 

@@ -15,7 +15,7 @@
  </div>
 </div>
 <% @posts.each do |post| %>
-  <% if post.where(:id => current_user.id).exists?%>
+  <% if post.user_id == current_user.id%>
 
 
 <div class="row" id="<%=post.id%>">
@@ -33,17 +33,35 @@
         <li class="media">
           <div class="media-body">
             <h6 class="media-heading">
-              <a href="/posts/<%=post.id%>"><%=post.id%></a>
+              <a href="/posts/<%=post.id%>"> Post #<%=post.id%></a>
               <small>
-                Created <%=distance_of_time_in_words(Time.now, post.created_at)%> ago
+                 Created <%=distance_of_time_in_words(Time.now, post.created_at)%> ago
               </small>
             </h6>
             <p>
-              <li><b>Type:</b> <%=post.sell_buy%></li>
-              <li><b>Cost per ticket:</b> <%=number_to_currency(post.ticket_amount)%></li>
-              <li><b>Number of tickets:</b> <%=post.number_tickets%></li>
+              <li><b> Type:</b> <%=post.sell_buy%></li>
+              <li><b> Cost per ticket:</b> <%=number_to_currency(post.ticket_amount)%></li>
+              <li><b> Number of tickets:</b> <%=post.number_tickets%></li>
               <br>
             </p>
+            <%if post.comments.count != "0"%>
+            <% post.comments.each do |comment|%>
+            <ul class="media-list">
+              <li class="media">
+                <div class="media-body">
+                  <h6 class="media-heading">
+                    <a href="/users/<%=comment.user.id%>"><%=comment.user.username%></a>
+                    <small>
+                      <%=time_ago_in_words(comment.created_at)%> ago
+                    </small>
+                  </h6>
+                  <%=comment.content%>
+                    <br>
+                </div>
+              </li>
+              <%end%>
+            </ul>
+            <%end%>
           </div>
         </li>
         <!--<p>-->
@@ -51,18 +69,22 @@
                 <a href="/events" class="btn btn-primary">
                   <i class="fa fa-chevron-left"></i>
                 </a>
-                <a href="/posts/<%post.id%>/edit" class="btn btn-warning">
+                <a href="/posts/<%= post.id%>/edit" class="btn btn-warning">
                  <i class="fa fa-edit"></i>
                 </a>
                 <!--looking to archive aka change post from active = true to active = false-->
-                <a href="/delete_post/<%post.id%>" class="btn btn-danger" rel="nofollow">
+                <a href="/archive_post/<%= post.id %>" class="btn btn-danger" rel="nofollow">
                   <i class="fa fa-archive" aria-hidden="true"></i>
                 </a>
 
               </div>
-          </ul>
+              <hr>
+      </ul>
         </div>
       </div>
     </div>
+</div>
     <%end%>
+</div>
+
 <%end%>
