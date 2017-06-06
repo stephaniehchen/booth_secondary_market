@@ -78,8 +78,9 @@
                   <h4>
                     Posts
                   </h4>
-                <%if event.posts.count !=0%>
                 </ul>
+
+                <%if event.posts.count !=0%>
                 <% event.posts.each do |post| %>
                   <% if post.active != false %>
                     <ul class="media-list">
@@ -92,10 +93,34 @@
                             </small>
                           </h6>
                           <ul class="media-list">
+                            <p>
                             <li><b>Type:</b> <%=post.sell_buy%></li>
                             <li><b>Cost per ticket:</b> <%=number_to_currency(post.ticket_amount)%></li>
                             <li><b>Number of tickets:</b> <%=post.number_tickets%></li>
-                            <br>
+                            <!-- <li>
+                            <%if post.comments.count != "0"%>
+                            <% post.comments.each do |comment|%>
+                            <ul class="list-group">
+                              <li class="list">
+                                <div class="list-body">
+                                  <h6 class="list-heading">
+                                    <a href="/users/<%=comment.user.id%>"><%=comment.user.username%></a>
+                                    <small>
+                                      <%=time_ago_in_words(comment.created_at)%> ago
+                                    </small>
+                                  </h6>
+                                  <%=comment.content%>
+                                </li>
+                                    <br>
+                                </div>
+                              </li>
+                              <%end%>
+                            </ul>
+                          </li> -->
+
+                          </p>
+
+                            <%end%>
                           </ul>
                         </div>
                       </li>
