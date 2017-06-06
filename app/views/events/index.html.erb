@@ -11,16 +11,14 @@
 </div>
 
 <% @events.each do |event| %>
+<% if event.event_date-Time.now != 0%>
 <div class="row" id="<%=event.id%>">
   <div class="col-md-8 col-md-offset-2">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h3 class="panel-title">
-          <a href="/events/<%=event.id%>"><%=event.event_name%></a>
-          <small>
-            <%=event.event_date.strftime("%A %m/%d at %l:%M%p")%>
-          </small>
-        </h3>
+        <h4 class="panel-title">
+          <a href="/events/<%=event.id%>"><%=event.event_date.strftime("%A %m/%d at %l:%M%p")%></a>
+        </h4>
       </div>
       <%if event.image_url != nil%>
       <div class="panel-body">
@@ -28,57 +26,62 @@
           <img src="<%=event.image_url%>" class="img-responsive"></img>
         </a>
       <%end%>
-        <p>
-          <%if event.fans.where(:id => current_user.id).exists?%>
-            <a href="/delete_like/<%Like.find_by(:user_id => current_user.id, :event_id => event.id).id%>" class="btn btn-link" rel="nofollow">
-              <i class="fa fa-heart"></i>
-            </a>
-          <%else%>
-
-            <form action="/create_like" method="post">
-              <!-- Hidden input for authenticity token to protect from forgery -->
-              <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
-
-              <input type="hidden" name="event_id" value="<%=event.id%>">
-
-              <input type="hidden" name="user_id" value="<%=current_user.id%>">
-              <button class="btn btn-link">
-                <i class="fa fa-heart-o"></i>
-              </button>
-            <%end%>
-              <%
-                 username_list = []
-                 event.likes.each do |like|
-                   username_list.push(like.user.username)
-                 end
-              %>
-              <% if username_list.count == 1 %>
-                <%= "#{username_list.to_sentence} likes this" %>
-              <% elsif username_list.count > 1 %>
-                <%= "#{username_list.to_sentence} like this" %>
-              <% else %>
-                <!-- do nothing if no one has liked the post so far -->
-              <% end %>
-            </form>
-        </p>
-
                 <ul class="media-list">
                   <li class="media">
                     <div class="media-body">
-                      <h6 class="media-heading">
-                        <a href="/event/<%=event.id%>"><%=event.event_name%></a>
+                      <h5 class="media-heading">
+                        <a href="/events/<%=event.id%>"><%=event.event_name%></a>
                         <small>
                           Event in <%=distance_of_time_in_words(Time.now, event.event_date)%>
                         </small>
-                      </h6>
-                      Hosted by <%=event.organizer.name%>
+                      </h5>
+                      Hosted by <a href="/organizers/<%=event.organizer.id%>"><%=event.organizer.name%></a>
                       <p>
                       <%=event.description%>
                       </p>
                     </div>
                   </li>
-                </ul><% event.posts.each do |post| %>
-                  <% if post.active != 0 %>
+                  <!--<p>-->
+                    <%if event.fans.where(:id => current_user.id).exists?%>
+                      <a href="/delete_like/<%=Like.find_by(:user_id => current_user.id, :event_id => event.id).id%>" class="btn btn-link" rel="nofollow">
+                        <i class="fa fa-heart"></i>
+                      </a>
+                    <%else%>
+
+                      <form action="/create_like" method="post">
+                        <!-- Hidden input for authenticity token to protect from forgery -->
+                        <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+
+                        <input type="hidden" name="event_id" value="<%=event.id%>">
+
+                        <input type="hidden" name="user_id" value="<%=current_user.id%>">
+                        <button class="btn btn-link">
+                          <i class="fa fa-heart-o"></i>
+                        </button>
+                      <%end%>
+                        <%
+                           username_list = []
+                           event.likes.each do |like|
+                             username_list.push(like.user.username)
+                           end
+                        %>
+                        <% if username_list.count == 1 %>
+                          <%= "#{username_list.to_sentence} likes this" %>
+                        <% elsif username_list.count > 1 %>
+                          <%= "#{username_list.to_sentence} like this" %>
+                        <% else %>
+                          <!-- do nothing if no one has liked the post so far -->
+                        <% end %>
+                      </form>
+  <!--</p>-->
+                  <hr>
+                  <h4>
+                    Posts
+                  </h4>
+                <%if event.posts.count !=0%>
+                </ul>
+                <% event.posts.each do |post| %>
+                  <% if post.active != false %>
                     <ul class="media-list">
                       <li class="media">
                         <div class="media-body">
@@ -88,16 +91,23 @@
                               <%=time_ago_in_words(post.created_at)%> ago
                             </small>
                           </h6>
-                          <%=post.sell_buy%>
-                          <%=number_to_currency(post.ticket_amount)%>
-                          <%=post.number_tickets%>
+                          <ul class="media-list">
+                            <li><b>Type:</b> <%=post.sell_buy%></li>
+                            <li><b>Cost per ticket:</b> <%=number_to_currency(post.ticket_amount)%></li>
+                            <li><b>Number of tickets:</b> <%=post.number_tickets%></li>
+                            <br>
+                          </ul>
                         </div>
                       </li>
-                    </ul>
                   <%end%>
                 <%end%>
+                <%else%>
+                  <i>No posts submitted yet!</i>
+                <%end%>
                 <li class="media">
-                  <div class="media-body">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">Submit a post</div>
+                      <div class="panel-body">
                       <form action="/create_post" method="post">
                         <!-- Hidden input for authenticity token to protect from forgery -->
                         <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
@@ -114,7 +124,7 @@
                               </label>
 
                               <div class="input-group">
-                                <%= select_tag(:sell_buy, "<option>sell</option><option>buy</option>".html_safe, :class => "form-control", prompt: "Selling or buying tickets?") %>
+                                <%= select_tag(:sell_buy, "<option>Sell</option><option>Buy</option>".html_safe, :class => "form-control", prompt: "Selling or buying tickets?") %>
                               </div>
                             </div>
                         <!-- Label and input for amount -->
@@ -155,10 +165,12 @@
                         </div>
                       </form>
                     </div>
+                  </div>
                   </li>
-
+                </ul>
       </div>
     </div>
   </div>
 </div>
+<%end%>
 <%end%>

@@ -1,42 +1,35 @@
-<div class="page-header">
-  <h3>User #<%= @user.id %></h3>
-</div>
+<hr>
+<div class="row" id="<%=@user.id%>">
+  <div class="col-md-8 col-md-offset-2">
+    <ul class="media-list">
+      <li class="media">
+        <div class="media-body">
+          <h4 class="media-heading">
+            <%=@user.username%>
+            <small>
+              Joined <%=distance_of_time_in_words(@user.created_at, Time.now)%> ago
+            </small>
+          </h4>
 
-<div class="row">
-  <div class="col-md-12 mb-2">
     <dl class="dl-horizontal">
-      <dt><%= @user.name %></dt>
+      <%if @user.image_url != nil%>
+      <dt></dt>
+      <dd><img src="<%=@user.image_url%>"></img>
+      <%end%>
 
       <dt>Email Address</dt>
-      <dd><%= @user.email %></dd>
+      <dd><a href="mailto:<%= @user.email%>"><%= @user.email %></a></dd>
 
-      <dt>Location address</dt>
-      <dd><%= @event.location_address %></dd>
+      <dt>Graduation Year</dt>
+      <dd><%= @user.graduation_year %></dd>
 
-      <dt>Url</dt>
-      <dd><%= @event.url %></dd>
-
-      <dt>Image url</dt>
-      <dd><%= @event.image_url %></dd>
-
-      <dt>Organizer</dt>
-      <dd><%= @event.organizer_id %></dd>
-
-      <dt>Description</dt>
-      <dd><%= @event.description %></dd>
+      <dt>Number of posts</dt>
+      <dd><%= @user.posts.count %></dd>
 
     </dl>
 
-    <div class="btn-group btn-group-justified">
-      <a href="/events" class="btn btn-primary">
-        Back
-      </a>
-      <a href="/events/<%= @event.id %>/edit" class="btn btn-warning">
-        Edit
-      </a>
-      <a href="/delete_event/<%= @event.id %>" class="btn btn-danger" rel="nofollow">
-        Delete
-      </a>
-    </div>
+        </div>
+      </li>
+    </ul>
   </div>
 </div>

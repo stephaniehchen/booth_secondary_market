@@ -5,9 +5,14 @@ class PostsController < ApplicationController
     render("posts/index.html.erb")
   end
 
+  def my_posts
+    @posts = Post.all
+    @events = Event.all
+    render("posts/my_posts.html.erb")
+  end
+
   def show
     @post = Post.find(params[:id])
-
     render("posts/show.html.erb")
   end
 
