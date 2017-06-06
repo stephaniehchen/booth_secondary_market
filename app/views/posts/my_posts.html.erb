@@ -1,0 +1,68 @@
+
+<div class="row">
+ <div class="col-md-8 col-md-offset-2">
+   <hr>
+   <a href="/events/" class="btn btn-default btn-block">
+     <i class="fa fa-chevron-left" aria-hidden="true"></i>
+   </a>
+   <hr>
+ </div>
+</div>
+<div class="row">
+ <div class="col-md-8 col-md-offset-2">
+   <h3 class="media-heading"> My Posts</h3>
+   <br>
+ </div>
+</div>
+<% @posts.each do |post| %>
+  <% if post.where(:id => current_user.id).exists?%>
+
+
+<div class="row" id="<%=post.id%>">
+  <div class="col-md-8 col-md-offset-2">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a href="/events/<%=post.event.id%>"><%=post.event.event_name%></a>
+        </h4>
+          <small>
+            <%=post.event.event_date.strftime("%A %m/%d at %l:%M%p")%>
+          </small>
+      </div>
+      <ul class="media-list">
+        <li class="media">
+          <div class="media-body">
+            <h6 class="media-heading">
+              <a href="/posts/<%=post.id%>"><%=post.id%></a>
+              <small>
+                Created <%=distance_of_time_in_words(Time.now, post.created_at)%> ago
+              </small>
+            </h6>
+            <p>
+              <li><b>Type:</b> <%=post.sell_buy%></li>
+              <li><b>Cost per ticket:</b> <%=number_to_currency(post.ticket_amount)%></li>
+              <li><b>Number of tickets:</b> <%=post.number_tickets%></li>
+              <br>
+            </p>
+          </div>
+        </li>
+        <!--<p>-->
+              <div class="btn-group btn-group-justified">
+                <a href="/events" class="btn btn-primary">
+                  <i class="fa fa-chevron-left"></i>
+                </a>
+                <a href="/posts/<%post.id%>/edit" class="btn btn-warning">
+                 <i class="fa fa-edit"></i>
+                </a>
+                <!--looking to archive aka change post from active = true to active = false-->
+                <a href="/delete_post/<%post.id%>" class="btn btn-danger" rel="nofollow">
+                  <i class="fa fa-archive" aria-hidden="true"></i>
+                </a>
+
+              </div>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <%end%>
+<%end%>

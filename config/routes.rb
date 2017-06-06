@@ -58,7 +58,10 @@ Rails.application.routes.draw do
 
   # READ
   get "/posts", :controller => "posts", :action => "index"
+  get "/posts/my_posts", :controller => "posts", :action => "my_posts"
   get "/posts/:id", :controller => "posts", :action => "show"
+
+
 
   # UPDATE
   get "/posts/:id/edit", :controller => "posts", :action => "edit"
