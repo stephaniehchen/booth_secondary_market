@@ -51,7 +51,7 @@
       <!-- Label and input for url -->
       <div class="form-group">
         <label for="url" class="control-label">
-          Url
+          Booth Groups URL
         </label>
 
         <input type="text" id="url" name="url" placeholder="Url" class="form-control" value="<%= @event.url %>">
@@ -62,8 +62,7 @@
         <label for="image_url" class="control-label">
           Image url
         </label>
-
-        <input type="text" id="image_url" name="image_url" placeholder="Image url" class="form-control" value="<%= @event.image_url %>">
+        <%= select_tag("organizer_id", options_from_collection_for_select(Organizer.all, :id, :name, @event.organizer_id), :class => "form-control") %>
       </div>
 
       <!-- Label and input for organizer_id -->

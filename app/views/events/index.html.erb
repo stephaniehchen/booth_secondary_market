@@ -23,7 +23,7 @@
       <%if event.image_url != nil%>
       <div class="panel-body">
         <a href="/events/<%=event.id%>">
-          <img src="<%=event.image_url%>" class="img-responsive"></img>
+          <img src="<%=event.image_url%>" class="img-responsive" width="100"></img>
         </a>
       <%end%>
                 <ul class="media-list">
@@ -101,26 +101,30 @@
                                   <b>Comments:</b>
                                   <ul> <!-- Post comments list -->
                                     <% post.comments.each do |comment| %>
-                                      <li><a href="/users/<%=comment.user.id%>"><%=comment.user.username%></a> <small><%= time_ago_in_words(comment.created_at)%> ago</small>: <%= comment.content %></li>
+                                      <li><a href="/users/<%=comment.user.id%>"><%=comment.user.username%></a> said  <small><%= time_ago_in_words(comment.created_at)%> ago</small>:  "<%= comment.content %>"</li>
                                     <% end %>
-                                    <div class="panel panel-default">
-                                      <div class="panel-heading">Submit a comment</div>
-                                        <div class="panel-body">
-                                        <form action="/create_comment" method="post">
-                                          <!-- Hidden input for authenticity token to protect from forgery -->
-                                          <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
-
-                                          <input type="hidden" name="post_id" value="<%=post.id%>">
-                                          <input type="hidden" name="user_id" value="<%=current_user.id%>">
-                                          <div class="input-group">
-                                            <input type="text" id="content" name="content" class="form-control" placeholder="Comment" required>
-                                          </div>
-                                        </form>
-                                      </div>
-                                    </div>
                                   </ul> <!-- End of  post comments list -->
                                 <% end %>
+                                <div class="panel panel-default">
+                                  <div class="panel-heading"><small>Submit comment</small></div>
+                                    <div class="panel-body">
+                                    <form action="/create_comment" method="post">
+                                      <!-- Hidden input for authenticity token to protect from forgery -->
+                                      <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
 
+                                      <input type="hidden" name="post_id" value="<%=post.id%>">
+                                      <input type="hidden" name="user_id" value="<%=current_user.id%>">
+                                      <div class="input-group">
+                                        <input type="text" id="content" name="content" class="form-control" placeholder="Comment" required>
+                                        <span class="input-group-btn">
+                                          <button class="btn btn-default" type="submit">
+                                            <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                                          </button>
+                                        </span>
+                                      </div>
+                                    </form>
+                                  </div>
+                                </div>
                               </li>
                             </ul>
                          </div>

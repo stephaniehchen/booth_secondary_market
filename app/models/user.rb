@@ -6,6 +6,9 @@ class User < ApplicationRecord
 
   validates :graduation_year, :numericality => { :less_than => 2030, :greater_than_or_equal_to => 2015 }
   validates :graduation_year, :presence => { :message => "cannot be blank" }
+  validates :email, format: { with: /.+@chicagobooth\.edu/i,
+      message: "invalid: App developed exclusively for Chicago Booth" }
+
 
   has_many :posts
   has_many :comments, :dependent => :destroy

@@ -14,7 +14,7 @@
 
 <div class="row">
   <div class="col-md-12">
-    <form action="/create_event" method="post">
+    <form action="/create_event" method="post" class="form-horizontal" enctype="multipart/form-data">
       <!-- Hidden input for authenticity token to protect from forgery -->
       <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
 
@@ -51,7 +51,7 @@
       <!-- Label and input for url -->
       <div class="form-group">
         <label for="url" class="control-label">
-          Url
+          Booth Groups URL
         </label>
 
         <input type="text" id="url" name="url" placeholder="Url" class="form-control" value="<%= @event.url %>">
@@ -60,10 +60,9 @@
       <!-- Label and input for image_url -->
       <div class="form-group">
         <label for="image_url" class="control-label">
-          Image url
+          Image URL
         </label>
-
-        <input type="text" id="image_url" name="image_url" placeholder="Image url" class="form-control" value="<%= @event.image_url %>">
+        <input type="file" id="image_url" name="image_url" class="form-control">
       </div>
 
       <!-- Label and input for organizer_id -->
@@ -71,9 +70,7 @@
         <label for="organizer_id" class="control-label">
           Organizer
         </label>
-
-        <input type="text" id="organizer_id" name="organizer_id" placeholder="Organizer" class="form-control" value="<%= @event.organizer_id %>">
-      </div>
+        <%= select_tag("organizer_id", options_from_collection_for_select(Organizer.all, :id, :name, @event.organizer_id), :class => "form-control") %>
 
       <!-- Label and input for description -->
       <div class="form-group">
